@@ -14,63 +14,56 @@
         </ol>
 
         <script>
-            // 아래 코드 fetch로 변경
-
             function addBookmarkRequest() {
                 const name = document.querySelector('input[name=name]').value;
                 const url = document.querySelector('input[name=url]').value;
-                const requestObject = {name: name, url: url};
-                const requestJson = JSON.stringify(requestObject);
+                const requestObject = { name: name, url: url };
 
-                function onReadyStateChange(event) {
-                    const currentAjaxRequest = event.currentTarget;
-
-                    if (currentAjaxRequest.readyState === XMLHttpRequest.DONE) {
-                      if (currentAjaxRequest.status === 200) {
+                fetch('/bookmark', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestObject)
+                })
+                .then(response => {
+                    if (response.status === 200) {
                         alert("즐겨찾기가 등록되었습니다.");
-                      } else {
+                    } else {
                         console.error('request failed');
-                      }
                     }
-                  }
-
-                const ajaxRequest = new XMLHttpRequest();
-
-                ajaxRequest.onreadystatechange = onReadyStateChange;
-                ajaxRequest.open('POST', '/bookmark');
-                ajaxRequest.setRequestHeader('Content-Type', 'application/json');
-                ajaxRequest.send(requestJson);
+                })
+                .catch(error => {
+                    console.error('request failed', error);
+                });
 
                 return false;
             }
 
             function getBookmarkListRequest() {
-                function onReadyStateChange(event) {
-                    const currentAjaxRequest = event.currentTarget;
-
-                    if (currentAjaxRequest.readyState === XMLHttpRequest.DONE) {
-                      if (currentAjaxRequest.status === 200) {
-                        const bookmarkListDom = document.querySelector('#bookmark-list');
-                        bookmarkListDom.innerHTML = '';
-
-                        const bookmarks = JSON.parse(currentAjaxRequest.responseText);
-                        bookmarks.forEach(bookmark => {
-                            const liNode = document.createElement('li');
-                            const textNode = document.createTextNode(bookmark.name + ' - ' + bookmark.url);
-                            liNode.appendChild(textNode);
-                            bookmarkListDom.appendChild(liNode);
-                        });
-                      } else {
+                fetch('/bookmarks')
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
                         console.error('request failed');
-                      }
+                        throw new Error('request failed');
                     }
-                  }
+                })
+                .then(bookmarks => {
+                    const bookmarkListDom = document.querySelector('#bookmark-list');
+                    bookmarkListDom.innerHTML = '';
 
-                const ajaxRequest = new XMLHttpRequest();
-
-                ajaxRequest.onreadystatechange = onReadyStateChange;
-                ajaxRequest.open('GET', '/bookmarks');
-                ajaxRequest.send();
+                    bookmarks.forEach(bookmark => {
+                        const liNode = document.createElement('li');
+                        const textNode = document.createTextNode(bookmark.name + ' - ' + bookmark.url);
+                        liNode.appendChild(textNode);
+                        bookmarkListDom.appendChild(liNode);
+                    });
+                })
+                .catch(error => {
+                    console.error('request failed', error);
+                });
             }
         </script>
     </body>
