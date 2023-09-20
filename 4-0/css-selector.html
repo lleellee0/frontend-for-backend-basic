@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CSS 선택자 예제</title>
+        <style>
+            /* 태그 선택자 (Element Selector) */
+            p {
+                color: blue;
+            }
+
+            /* 클래스 선택자 (Class Selector) */
+            .highlight {
+                background-color: yellow;
+            }
+
+            /* 아이디 선택자 (ID Selector) */
+            #header {
+                font-size: 24px;
+            }
+
+            /* 자식 선택자 (Child Selector) */
+            ul > li {
+                list-style-type: square;
+            }
+
+            /* 가상 클래스 선택자 (Pseudo-class Selector) */
+            a:hover {
+                color: red;
+            }
+
+            /* 속성 선택자 (Attribute Selector) */
+            input[type="text"] {
+                border: 1px solid gray;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="header">CSS 선택자 예제</h1>
+        <p>This is a paragraph with some text.</p>
+        <p class="highlight">This is a highlighted paragraph.</p>
+        <ul>
+            <li>List item 1</li>
+            <li>List item 2</li>
+        </ul>
+        <a href="#">Hover over me</a>
+        <br>
+        <input type="text" placeholder="Text input">
+    </body>
+</html>
