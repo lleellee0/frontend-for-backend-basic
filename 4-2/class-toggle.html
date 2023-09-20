@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            .box {
+                width: 200px;
+                height: 200px;
+                border: 2px solid black;
+                margin: 20px;
+            }
+
+            .bold-border {
+                border: 5px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="box" id="my-box"></div>
+        <button onclick="toggleBorder()">테두리 변경</button>
+
+        <script>
+            // 테두리 스타일 클래스 토글 함수
+            function toggleBorder() {
+                const box = document.getElementById('my-box');
+                box.classList.toggle('bold-border');
+            }
+        </script>
+    </body>
+</html>
