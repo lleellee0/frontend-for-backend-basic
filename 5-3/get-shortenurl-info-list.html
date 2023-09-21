@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>단축 URL 전체 조회</title>
+</head>
+<body>
+    <button onclick="getShortenurlInfoList();">단축 URL 전체 조회</button>
+    <div id="shortenurl-info-list">
+
+    </div>
+    <script>
+    function getShortenurlInfoList() {
+        fetch('/shortenUrls', {
+            method: 'GET'
+        })
+        .then(response => {
+            if (response.status === 200) {
+                response.json().then(data => {
+                    console.log(data);
+
+                    const shortenurlInfoListDom = document.querySelector('#shortenurl-info-list');
+                    let shortenurlInfoListString = "";
+
+                    data.forEach(shortenurlInfo => {
+                        shortenurlInfoListString += `
+                                원본 URL : ${shortenurlInfo.originalUrl}
+                                단축 URL의 KEY : ${shortenurlInfo.shortenUrlKey}
+                                사용 횟수 : ${shortenurlInfo.redirectCount}
+                        `;
+                    });
+
+                    shortenurlInfoListDom.innerText = shortenurlInfoListString;
+                });
+
+
+            } else {
+                console.error('request failed');
+            }
+        })
+        .catch(error => {
+            console.error('request failed', error);
+        });
+
+        return false;
+    }
+    </script>
+</body>
+</html>

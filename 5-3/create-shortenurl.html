@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>단축 URL 생성</title>
+</head>
+<body>
+    <form onsubmit="return createShortenurl();">
+        <input type="url" id="url-input">
+        <input type="submit">
+    </form>
+    <span id="created-shortenurl"></span>
+    <script>
+        function createShortenurl() {
+                const url = document.querySelector('#url-input').value;
+                const requestObject = { originalUrl: url };
+
+                fetch('/shortenUrl', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestObject)
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        // 1. response의 body에 있는 JSON shortenUrlKey -> 가져와야함.
+                        response.json().then(data => {
+                            console.log(data);
+                            // 2. #created-shortenurl 부분에 URL 형태로 생성 (http://localhost:8080/asbcd)
+                            const createdShortenurlDom = document.querySelector('#created-shortenurl');
+                            const shortenurl = window.location.protocol + "//" + window.location.host + "/" + data.shortenUrlKey;
+                            createdShortenurlDom.innerText = shortenurl;
+                        });
+                    } else {
+                        console.error('request failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('request failed', error);
+                });
+
+                return false;
+            }
+    </script>
+</body>
+</html>
