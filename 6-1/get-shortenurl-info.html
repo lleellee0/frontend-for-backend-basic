@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>단축 URL 단건 정보 조회</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/ui/create-shortenurl.html">단축 URL 서비스</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/ui/create-shortenurl.html">단축 URL 생성</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/ui/get-shortenurl-info.html">단축 URL 단건 정보 조회</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/ui/get-shortenurl-info-list.html">단축 URL 전체 조회</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <form onsubmit="return getShortenurlInfo();">
+        <input type="text" id="shortenurl-key" required>
+        <input type="submit">
+    </form>
+    <div id="shortenurl-info">
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <script>
+        function getShortenurlInfo() {
+                const shortenurlKey = document.querySelector('#shortenurl-key').value;
+
+                fetch('/shortenUrl/' + shortenurlKey, {
+                    method: 'GET'
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        // 1. response의 body에 있는 값을 가져옴
+                        response.json().then(data => {
+                            console.log(data);
+                            // 2. body에 있는 값을 shortenurl-info에 뿌려줌
+                            const shortenurlInfoDom = document.querySelector('#shortenurl-info');
+                            shortenurlInfoDom.innerText = `
+                                        원본 URL : ${data.originalUrl}
+                                        단축 URL의 KEY : ${data.shortenUrlKey}
+                                        사용 횟수 : ${data.redirectCount}
+                            `
+                        });
+
+
+                    } else {
+                        console.error('request failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('request failed', error);
+                });
+
+                return false;
+            }
+    </script>
+</body>
+</html>
